@@ -1,7 +1,7 @@
 if(process.env.NODE_ENV !="production"){
    require('dotenv').config()
 }
-// console.log(process.env)
+
 
 const express = require("express");
 const app = express();
@@ -103,21 +103,10 @@ app.use((err,req,res,next)=>{
     
 
 })
-app.listen(8080,() => {
-    console.log("server is listening to code 8080");
-})
-// async function main() {
-//   try {
-//     console.log("Connecting to:", dbUrl);
-//     await mongoose.connect(dbUrl); // No extra options needed in Mongoose 7+
-//     console.log("✅ MongoDB Connected");
-
-//     app.listen(8080, () => {
-//       console.log("🚀 Server is listening  port 8080");
-//     });
-//   } catch (err) {
-//     console.error("❌ MongoDB connection failed:", err.message);
-//   }
-// }
-// main();
-
+// app.listen(8080,() => {
+//     console.log("server is listening to code 8080");
+// })
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+    console.log(`server is listening on port ${port}`);
+});
