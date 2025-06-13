@@ -82,9 +82,9 @@ app.use((req,res,next)=>{
     next();
 });
 // Example; customize as needed
-// app.get('/', (req, res) => {
-//   res.render('listings'); // or res.send("Hello Airbnb Clone!");
-// });
+app.get('/', (req, res) => {
+  res.render('listings'); // or res.send("Hello Airbnb Clone!");
+});
 
 // app.get("/demouser",async(req,res) => {
 // let fakeuser= new User ({
