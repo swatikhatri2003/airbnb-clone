@@ -82,9 +82,9 @@ app.use((req,res,next)=>{
     next();
 });
 // Example; customize as needed
-app.get('/', (req, res) => {
-  res.render('/listings'); // or res.send("Hello Airbnb Clone!");
-});
+// app.get('/', (req, res) => {
+//   res.render('listings'); // or res.send("Hello Airbnb Clone!");
+// });
 
 // app.get("/demouser",async(req,res) => {
 // let fakeuser= new User ({
@@ -108,11 +108,11 @@ app.use((err,req,res,next)=>{
     
 
 })
-// Named wildcard with parameter
-app.all('/*catchall', (req, res) => {
+
+// Or alternate syntax, same effect:
+app.all('/{*any}', (req, res) => {
   res.status(404).render('notfound');
 });
-
 
 // app.listen(8080,() => {
 //     console.log("server is listening to code 8080");
