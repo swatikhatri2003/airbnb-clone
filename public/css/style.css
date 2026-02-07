@@ -178,7 +178,7 @@ body {
 
 .app-navbar .search-form {
   display: flex;
-  gap: 8px;
+  gap: 3px;
   align-items: center;
 }
 
@@ -1025,7 +1025,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   text-align: center;
 }
 
@@ -1039,7 +1039,7 @@ body {
 
 .app-footer .footer-socials {
   display: flex;
-  gap: 5px;
+
   align-items: center;
 }
 
