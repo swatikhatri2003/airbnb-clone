@@ -1,28 +1,28 @@
- <% layout("/layouts/boilerplate") %> 
-<style>
-  .row{
-    height: 73vh !important;
-    width: 100%;
-  }
-</style>
- <div class="row mt-3">
-    <div>
-      <h1 class="col-6 offset-3">signup form</h1>
-    <div class="col-6 offset-3">
-      <form action="/signup" method="POST" novalidate class="needs-validation" novalidate>
-        <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-          <input type="text" class="form-control" required  name="username" placeholder="abcd" id="username" required>
-          <div class="valid-feedback"> looks good!</div>
-        </div>
-          <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-          <input type="email" class="form-control" required  name="email" placeholder="abcd@.com" id="email" required >
-        </div>
-        <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" required  name="password" placeholder="abcd" id="password" required>
-        </div>
-        <button class="btn btn-success">SignUp</button>
-    </div>
-        </div>
+<% layout("/layouts/boilerplate") %>
+
+<div class="form-page">
+  <div class="form-card auth-form">
+    <h2 class="form-title">Sign up</h2>
+    <form action="/signup" method="POST" novalidate class="needs-validation">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control" required placeholder="Choose a username" autocomplete="username">
+        <div class="invalid-feedback">Please enter a username.</div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" required placeholder="you@example.com" autocomplete="email">
+        <div class="invalid-feedback">Please enter a valid email.</div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required placeholder="Choose a password" autocomplete="new-password">
+        <div class="invalid-feedback">Please enter a password.</div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary-app">Sign up</button>
+      </div>
+    </form>
+    <p class="auth-footer">Already have an account? <a href="/login">Log in</a></p>
+  </div>
+</div>

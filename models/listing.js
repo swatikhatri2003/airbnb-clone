@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review= require("./review.js")
+
+// Airbnb-style categories for filtering
+const CATEGORIES = [
+  "Trending", "Rooms", "Iconic Cities", "Mountains", "Amazing Pools",
+  "Camping", "Farms", "Arctic"
+];
+
 const listingSchema = Schema({
     title: {
         type:String,
@@ -14,6 +21,11 @@ const listingSchema = Schema({
     price:Number,
     location:String,
     country:String,
+    category: {
+        type: String,
+        enum: CATEGORIES,
+        default: "Trending",
+    },
     reviews: [
         {
             type: Schema.Types.ObjectId, 
@@ -34,3 +46,4 @@ listingSchema.post("findOneAndDelete", async(Listing) =>{
 })
 const listing = mongoose.model("listing",listingSchema);
 module.exports = listing;
+module.exports.CATEGORIES = CATEGORIES;

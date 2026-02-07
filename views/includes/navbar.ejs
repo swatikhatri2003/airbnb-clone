@@ -1,31 +1,68 @@
+<nav class="app-navbar">
+  <div class="navbar-inner">
+    <a class="brand" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      <span class="d-none d-md-inline">Wanderlust</span>
+    </a>
 
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
-      <span class="navbar-toggler-icon"></span>
+    <button type="button" class="nav-toggle d-lg-none" id="navToggle" aria-label="Open menu">
+      <i class="fa-solid fa-bars" id="navToggleIcon"></i>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
-      </div>
-      <div class="navbar-nav ms-auto">
-         <div class="container-fluid">
-        <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search Destinations" aria-label="Search"/>
-      <button class="btn btn-outline-danger" type="submit"> <i class="fa-solid fa-magnifying-glass"></i> </button>
-    </form>
-  </div>
-      </div>
-      <div class="navbar-nav ms-auto">
-             <a class="nav-link" href="/listings/new">Airbnb Your home</a>
-          <% if(!currUser){ %>
-        <a class="nav-link " href="/signup"><b>SignUp</b></a>
-        <a class="nav-link" href="/login"><b>Login</b></a> <% } %>
-         <% if(currUser){ %>
-        <a class="nav-link" href="/logout"> Logout</a> <% } %>
 
+    <div class="nav-menu" id="navMenu">
+      <div class="search-wrap">
+        <form class="search-form" action="/listings" method="GET" role="search" id="navSearchForm">
+          <input type="text" name="search" placeholder="Search destinations…" aria-label="Search" id="navSearchInput"
+                 value="<%= typeof currentSearch !== 'undefined' ? currentSearch : '' %>">
+          <a href="/listings" class="search-clear-btn <%= (typeof currentSearch === 'undefined' || !currentSearch) ? 'search-clear-hidden' : '' %>" id="navSearchClear" aria-label="Clear search" title="Clear search"><i class="fa-solid fa-times"></i></a>
+          <button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
       </div>
+      <a class="nav-link" href="/listings">Explore</a>
+      <a class="nav-link" href="/listings/new">Airbnb your home</a>
+      <% if (!currUser) { %>
+        <a class="nav-link" href="/signup">Sign up</a>
+        <a class="nav-link btn-login" href="/login">Log in</a>
+      <% } else { %>
+        <a class="nav-link" href="/logout">Log out</a>
+      <% } %>
     </div>
   </div>
 </nav>
+
+<script>
+  (function() {
+    var toggle = document.getElementById('navToggle');
+    var menu = document.getElementById('navMenu');
+    var icon = document.getElementById('navToggleIcon');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function() {
+        menu.classList.toggle('is-open');
+        if (icon) {
+          icon.classList.toggle('fa-bars');
+          icon.classList.toggle('fa-times');
+        }
+      });
+    }
+
+    var searchInput = document.getElementById('navSearchInput');
+    var searchClear = document.getElementById('navSearchClear');
+    if (searchInput && searchClear) {
+      function toggleClearBtn() {
+        searchClear.classList.toggle('search-clear-hidden', !searchInput.value.trim());
+      }
+      searchInput.addEventListener('input', function() {
+        toggleClearBtn();
+        if (!searchInput.value.trim() && window.location.pathname === '/listings' && window.location.search) {
+          window.location.href = '/listings';
+        }
+      });
+      searchInput.addEventListener('search', function() {
+        if (!searchInput.value.trim() && window.location.pathname === '/listings' && window.location.search) {
+          window.location.href = '/listings';
+        }
+      });
+      toggleClearBtn();
+    }
+  })();
+</script>

@@ -1,7 +1,47 @@
-const listing =require("../models/listing");
-module.exports.index= async(req,res) =>{
-   const alllistings= await listing.find({});
-   res.render("./listings/index.ejs",{alllistings});
+const listing = require("../models/listing");
+const { CATEGORIES } = require("../models/listing");
+
+module.exports.index = async (req, res) => {
+  const { search, category } = req.query;
+  const conditions = [];
+
+  // Search: match title, description, location, or country (case-insensitive)
+  if (search && search.trim()) {
+    const searchRegex = new RegExp(search.trim(), "i");
+    conditions.push({
+      $or: [
+        { title: searchRegex },
+        { description: searchRegex },
+        { location: searchRegex },
+        { country: searchRegex },
+      ],
+    });
+  }
+
+  // Category filter - match exact category OR listings without category (legacy) when "Trending"
+  if (category && category.trim()) {
+    if (category.trim() === "Trending") {
+      conditions.push({
+        $or: [
+          { category: "Trending" },
+          { category: { $exists: false } },
+          { category: "" },
+          { category: null },
+        ],
+      });
+    } else {
+      conditions.push({ category: category.trim() });
+    }
+  }
+
+  const filter = conditions.length ? { $and: conditions } : {};
+  const alllistings = await listing.find(filter).sort({ _id: -1 });
+  res.render("./listings/index.ejs", {
+    alllistings,
+    categories: CATEGORIES,
+    currentSearch: search || "",
+    currentCategory: category || "",
+  });
 };
 module.exports.renderNewForm =(req,res) => {
     res.render("./listings/new.ejs");
@@ -14,7 +54,7 @@ module.exports.showListing=async (req,res) => {
             req.flash("error"," listing does not exist");
             res.redirect("/listings");
     }
-    console.log(listings);
+
     res.render("./listings/show.ejs",{listing:listings});
 
 }
@@ -74,7 +114,7 @@ module.exports.updateListing=async (req,res) => {
 module.exports.destroyListing= async (req,res) =>{
      let {id}= req.params;
      let deletedlisting=  await listing.findByIdAndDelete(id);
-     console.log( deletedlisting);
+ 
          req.flash("success"," listing deleted")
      res.redirect("/listings");
      

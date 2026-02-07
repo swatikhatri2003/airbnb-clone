@@ -1,9 +1,8 @@
+<% layout("/layouts/boilerplate") %>
 
-<% layout("/layouts/boilerplate")%>
-
-<div class="row mt-3">
-<div class="alert alert-danger col-6 offset-3" role="alert">
-    <h4 class="alert-heading"><%= message %></h4>
-
-</div>
+<div class="error-page">
+  <div class="error-code"><%= typeof statusCode !== 'undefined' ? statusCode : 500 %></div>
+  <h1>Something went wrong</h1>
+  <p class="error-message"><%= message %></p>
+  <a href="/listings" class="btn-primary-app">Back to listings</a>
 </div>

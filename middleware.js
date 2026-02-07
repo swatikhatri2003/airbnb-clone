@@ -3,8 +3,7 @@ const Review = require("./models/review.js");
 const ExpressError= require("./utils/expresserror.js");
 const {listingSchema,reviewSchema} = require("./schema.js");
 module.exports.isLogedIn =(req,res,next)=>{
-    // console.log(req.user); used to check user is logged in or not
-    console.log(req.path,"..", req.originalUrl);  // user k bare m btatta h konse path ko access krne ki koshish krra tha user
+   // user k bare m btatta h konse path ko access krne ki koshish krra tha user
       if(!req.isAuthenticated()){
         req.session.redirectUrl= req.originalUrl;
         req.flash("error","you msut be loggedin to create listing");

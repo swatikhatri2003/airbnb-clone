@@ -1,15 +1,37 @@
-
 <% if (success && success.length > 0) { %>
-  <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
-    <%= success %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="flash-wrap" data-auto-dismiss>
+    <div class="flash-alert flash-success" role="alert">
+      <span class="flash-message"><%= Array.isArray(success) ? success[success.length - 1] : success %></span>
+      <button type="button" class="flash-close" aria-label="Close" onclick="this.closest('.flash-wrap').remove()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
   </div>
 <% } %>
-
 
 <% if (error && error.length > 0) { %>
-  <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
-    <%= error %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="flash-wrap" data-auto-dismiss>
+    <div class="flash-alert flash-danger" role="alert">
+      <span class="flash-message"><%= Array.isArray(error) ? error[error.length - 1] : error %></span>
+      <button type="button" class="flash-close" aria-label="Close" onclick="this.closest('.flash-wrap').remove()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
   </div>
 <% } %>
+
+<script>
+(function() {
+  var wraps = document.querySelectorAll('.flash-wrap[data-auto-dismiss]');
+  wraps.forEach(function(wrap) {
+    setTimeout(function() {
+      if (wrap.parentNode) {
+        wrap.style.opacity = '0';
+        wrap.style.transform = 'translateY(-8px)';
+        wrap.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        setTimeout(function() { if (wrap.parentNode) wrap.remove(); }, 300);
+      }
+    }, 5000);
+  });
+})();
+</script>

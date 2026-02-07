@@ -77,14 +77,16 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use((req,res,next)=>{
     res.locals.success= req.flash("success");
-     res.locals.error= req.flash("error");
-      res.locals.currUser= req.user;
+    res.locals.error= req.flash("error");
+    res.locals.currUser= req.user;
+    res.locals.currentSearch = req.query.search || "";
+    res.locals.currentCategory = req.query.category || "";
     next();
 });
 // Example; customize as needed
-app.get('/', (req, res) => {
-  res.render('listings'); // or res.send("Hello Airbnb Clone!");
-});
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+  });
 
 // app.get("/demouser",async(req,res) => {
 // let fakeuser= new User ({
@@ -95,9 +97,12 @@ app.get('/', (req, res) => {
 // res.send(registeredUser);
 // })
 
-app.use("/listings",listingsRouter);
-app.use("/listings/:id/reviews",reviewsRouter);
-app.use("/",userRouter);
+app.get("/privacy", (req, res) => res.render("privacy"));
+app.get("/terms", (req, res) => res.render("terms"));
+
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
 
 // app.all("*",(req,res,next)=>{
 //    next(new ExpressError(404,"page not found"));

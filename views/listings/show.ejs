@@ -1,87 +1,154 @@
-
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-3">
-  <div class="col-md-5  offset-md-2">
-    
-    <h3><%= listing.title %></h3>
+<div class="show-page">
+  <div class="show-title-row">
+    <a href="/listings" class="show-back-btn" aria-label="Back to listings">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <h1 class="show-title"><%= listing.title %></h1>
+  </div>
+  <p class="show-meta">Hosted by <strong><%= listing.owner.username %></strong></p>
 
-   
-    <div class="card mt-3">
-      <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image" />
-      <div class="card-body">
-        <p class="card-text">
-          Owned by - <i><%= listing.owner.username %></i><br>
-          <%= listing.description %><br>
-          &#8377;<%= listing.price.toLocaleString("en-IN") %><br>
-          <%= listing.location %><br>
-          <%= listing.country %><br>
-        </p>
+  <div class="show-img-wrap">
+    <% if (listing.image && listing.image.url) { %>
+      <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
+    <% } else { %>
+      <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200" alt="<%= listing.title %>">
+    <% } %>
+  </div>
 
+  <div class="show-details">
+    <p class="mb-0"><strong>&#8377;<%= (listing.price || 0).toLocaleString('en-IN') %></strong> per night</p>
+    <p class="mb-0"><%= listing.location %>, <%= listing.country %></p>
+  </div>
 
-        <% if (currUser && String(listing.owner._id) === String(currUser._id)) { %>
-          <div class="d-flex gap-3 mt-3">
-            <a href="/listings/<%= listing._id %>/edit" class="btn btn-danger">Edit</a>
-            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST">
-              <button class="btn btn-dark">Delete</button>
-            </form>
+  <p class="show-description"><%= listing.description %></p>
+
+  <% if (currUser && String(listing.owner._id) === String(currUser._id)) { %>
+    <div class="show-actions">
+      <a href="/listings/<%= listing._id %>/edit" class="btn-primary-app">Edit listing</a>
+      <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Delete this listing?');">
+        <button type="submit" class="btn-outline-app">Delete</button>
+      </form>
+    </div>
+  <% } %>
+
+  <section class="reviews-section" aria-labelledby="review-heading">
+    <h4 id="review-heading"><% if (!currUser) { %>Log in to <% } %>Leave a review</h4>
+
+    <% if (currUser) { %>
+      <div class="review-form-card">
+        <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation" id="reviewForm">
+          <div class="star-rating-wrap">
+            <span class="star-rating-label">Your rating</span>
+            <input type="hidden" name="review[rating]" id="ratingInput" value="3" required>
+            <div class="star-rating" id="starRating" role="group" aria-label="Rate 1 to 5 stars">
+              <button type="button" class="star" data-value="1" aria-label="1 star"><i class="fa-regular fa-star"></i></button>
+              <button type="button" class="star" data-value="2" aria-label="2 stars"><i class="fa-regular fa-star"></i></button>
+              <button type="button" class="star" data-value="3" aria-label="3 stars"><i class="fa-regular fa-star"></i></button>
+              <button type="button" class="star" data-value="4" aria-label="4 stars"><i class="fa-regular fa-star"></i></button>
+              <button type="button" class="star" data-value="5" aria-label="5 stars"><i class="fa-regular fa-star"></i></button>
+            </div>
+            <span class="d-block mt-1 small text-muted" id="ratingLabel">3 out of 5</span>
           </div>
-        <% } %>
+          <div class="form-group mb-3">
+            <label for="comment">Comment</label>
+            <textarea name="review[comment]" id="comment" class="form-control" rows="3" required placeholder="Share your experience…"></textarea>
+            <div class="invalid-feedback">Please enter a comment.</div>
+          </div>
+          <button type="submit" class="btn-primary-app">Submit review</button>
+        </form>
+      </div>
+    <% } %>
 
-        <hr>
-
-
-        <div class="col-12 col-md-8 offset-md-2 mt-5">
-          <h4 class="mb-4 text-center">
-            <% if (!currUser) { %>Login to <% } %>Leave a Review
-          </h4>
-
-          <% if (currUser) { %>
-            <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
-              <div class="mb-3">
-                <label for="rating" class="form-label">Rating</label>
-                <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]">
-              </div>
-              <div class="mb-3">
-                <label for="comment" class="form-label">Comment</label>
-                <textarea name="review[comment]" required id="comment" cols="30" rows="5" class="form-control" placeholder="Write your review here..."></textarea>
-                <div class="invalid-feedback">Please submit some comments for review.</div>
-              </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-dark">Submit Review</button>
-              </div>
-            </form>
-          <% } %>
-        </div>
-
-        <hr>
-
-      
-        <% if (listing.reviews.length > 0) { %>
-          <div class="row g-3 mt-4">
-            <h4 class="mb-3">All Reviews</h4>
-
-            <% for (let review of listing.reviews) { %>
-              <div class="col-12 col-md-6">
-                <div class="card h-100 shadow-sm p-3">
-                  <div class="card-body">
-                    <p class="pl-3">@<%= review.author.username %></p>
-                    <h5 class="card-title">Rating: <span class="badge bg-warning text-dark"><%= review.rating %> ★</span></h5>
-                    <p class="card-text"><%= review.comment %></p>
-                  </div>
-
-                  <% if (currUser && String(review.author._id) === String(currUser._id)) { %>
-                    <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mb-2" method="POST">
-                      <button class="btn btn-sm btn-dark">Delete</button>
-                    </form>
-                  <% } %>
-                </div>
-              </div>
+    <% if (listing.reviews && listing.reviews.length > 0) { %>
+      <h4 class="mt-4 mb-3">Reviews</h4>
+      <div class="reviews-grid">
+        <% for (let review of listing.reviews) { %>
+          <div class="review-card">
+            <div class="review-meta">
+              <span class="review-author">@<%= review.author.username %></span>
+              <span class="star-rating-display" aria-label="<%= review.rating %> out of 5 stars">
+                <% for (let s = 1; s <= 5; s++) { %>
+                  <% if (s <= review.rating) { %><i class="fa-solid fa-star star-full"></i><% } else { %><i class="fa-regular fa-star star-empty"></i><% } %>
+                <% } %>
+              </span>
+            </div>
+            <p class="review-comment"><%= review.comment %></p>
+            <% if (currUser && String(review.author._id) === String(currUser._id)) { %>
+              <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline mt-2" onsubmit="return confirm('Delete this review?');">
+                <button type="submit" class="btn-outline-app btn-sm">Delete</button>
+              </form>
             <% } %>
           </div>
         <% } %>
-
       </div>
-    </div>
-  </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No reviews yet. Be the first to review!</p>
+    <% } %>
+  </section>
 </div>
+
+<script>
+(function() {
+  var container = document.getElementById('starRating');
+  var input = document.getElementById('ratingInput');
+  var label = document.getElementById('ratingLabel');
+  if (!container || !input) return;
+
+  var stars = container.querySelectorAll('.star');
+  var current = parseInt(input.value, 10) || 3;
+
+  function setFilled(upTo) {
+    stars.forEach(function(star, i) {
+      var val = i + 1;
+      var icon = star.querySelector('i');
+      if (icon) {
+        icon.classList.remove('fa-regular', 'fa-solid');
+        icon.classList.add(val <= upTo ? 'fa-solid' : 'fa-regular', 'fa-star');
+      }
+    });
+  }
+
+  function setHover(upTo) {
+    if (upTo === 0) {
+      setFilled(current);
+      return;
+    }
+    stars.forEach(function(star, i) {
+      var val = i + 1;
+      var icon = star.querySelector('i');
+      if (icon) {
+        icon.classList.remove('fa-regular', 'fa-solid');
+        icon.classList.add(val <= upTo ? 'fa-solid' : 'fa-regular', 'fa-star');
+      }
+    });
+  }
+
+  function updateLabel(val) {
+    if (label) label.textContent = val + ' out of 5';
+  }
+
+  setFilled(current);
+
+  stars.forEach(function(star) {
+    var val = parseInt(star.getAttribute('data-value'), 10);
+
+    star.addEventListener('click', function(e) {
+      e.preventDefault();
+      current = val;
+      input.value = current;
+      setFilled(current);
+      updateLabel(current);
+    });
+
+    star.addEventListener('mouseenter', function() {
+      setHover(val);
+    });
+
+    star.addEventListener('mouseleave', function() {
+      setHover(0);
+    });
+  });
+})();
+</script>
